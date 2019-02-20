@@ -1,11 +1,23 @@
-import {todos} from './data';
+import { Injectable } from '@angular/core';
+import { Http } from '@angular/http';
+import 'rxjs/add/operator/toPromise';
+
 import {Todo} from './todo';
 
-export class TodoService {
-    todos: Todo[] = todos;
 
-    getTodos(): Todo[] {
-        return this.todos;
+@Injectable()
+export class TodoService {
+    private apiUrl= 'api/todos';
+    todos: Todo[] = [];
+
+    constructor(private http: Http) {}
+
+    getTodos(): Promise<Todo[]> {
+        return this.http.get(this.apiUrl)
+                        .toPromise()
+                        .then(res => res.json().data)
+                        .then(todos => this.todos = todos)
+                        .catch(this.handleError);
     }
 
     createTodo(title: string) {
@@ -23,5 +35,10 @@ export class TodoService {
 
     toggleTodo(todo: Todo) {
         todo.completed = !todo.completed;
+    }
+
+    private handleError(error: any) {
+        console.error('Произошла ошибка', error);
+        return Promise.reject(error.message || error);
     }
 }
