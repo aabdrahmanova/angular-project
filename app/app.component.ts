@@ -1,7 +1,5 @@
 import {Component} from '@angular/core';
 
-import { Todo } from './share/todo';
-import {todos} from './share/data';
 
 @Component({
     moduleId: module.id,
